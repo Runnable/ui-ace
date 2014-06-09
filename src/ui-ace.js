@@ -281,4 +281,4 @@ angular.module(moduleName, [])
   }]);
 })({
   ace: require('brace')
-}, require('angular'));
+}, window.angular);
