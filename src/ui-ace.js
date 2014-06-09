@@ -1,9 +1,16 @@
 'use strict';
 
+var moduleName = 'ui.ace';
+
+if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports){
+  module.exports = moduleName;
+}
+
+(function(window, angular){
 /**
  * Binds a ACE Editor widget
  */
-angular.module('ui.ace', [])
+angular.module(moduleName, [])
   .constant('uiAceConfig', {})
   .directive('uiAce', ['uiAceConfig', function (uiAceConfig) {
 
@@ -272,3 +279,4 @@ angular.module('ui.ace', [])
       }
     };
   }]);
+})(window, window.angular);
