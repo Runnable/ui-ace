@@ -123,6 +123,13 @@ angular.module(moduleName, [])
         var onChangeListener;
 
         /**
+         * Reference to a focus listener created by the listner factory.
+         * @function
+         * @see listnerFactory.onFocus
+         */
+        var onFocusListener;
+
+        /**
          * Reference to a blur listener created by the listener factory.
          * @function
          * @see listenerFactory.onBlur
@@ -195,6 +202,20 @@ angular.module(moduleName, [])
             };
           },
           /**
+           * Creates a focus listener which propagates the editor session
+           * to the callback from the user option onFocus. It might be
+           * exchanged during runtime, if this happens the old listener
+           * will be unbound.
+           *
+           * @param callback callback function defined in the user options
+           * @see onFocusListener
+           */
+          onFocus: function (callback) {
+            return function () {
+              executeUserCallback(callback, acee);
+            };
+          },
+          /**
            * Creates a blur listener which propagates the editor session
            * to the callback from the user option onBlur. It might be
            * exchanged during runtime, if this happens the old listener
@@ -254,6 +275,13 @@ angular.module(moduleName, [])
           onBlurListener = listenerFactory.onBlur(opts.onBlur);
           acee.on('blur', onBlurListener);
 
+          // unbind old focus listener
+          acee.removeListener('focus', onFocusListener);
+
+          // bind new focus listener
+          onFocusListener = listenerFactory.onFocus(opts.onFocus);
+          acee.on('focus', onFocusListener);
+
           setOptions(acee, session, opts);
         }, /* deep watch */ true );
 
@@ -263,6 +291,9 @@ angular.module(moduleName, [])
 
         onBlurListener = listenerFactory.onBlur(opts.onBlur);
         acee.on('blur', onBlurListener);
+
+        onFocusListener = listenerFactory.onBlur(opts.onFocus);
+        acee.on('focus', onFocusListener);
 
         elm.on('$destroy', function () {
           acee.session.$stopWorker();
